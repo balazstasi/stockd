@@ -1,6 +1,7 @@
 import ky from 'ky';
 import { DailyOpenClose } from '@/lib/types';
 import { PriceCard } from '@/components/price-card';
+import { SearchSymbol } from '@/components/search-symbol';
 
 interface StockDetailProps {
   params: {
@@ -17,6 +18,9 @@ async function StockDetail({ params }: StockDetailProps) {
 
   return (
     <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center bg-background align-middle'>
+      <div className='mb-32 w-[240px] py-4'>
+        <SearchSymbol />
+      </div>
       <div className='w-[240px]'>
         <PriceCard
           high={1200}
