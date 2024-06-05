@@ -5,7 +5,7 @@ export default function Home() {
     <main className='flex min-h-screen flex-col items-center justify-between bg-background p-24'>
       <div>
         <Button size='lg' className='bg-foreground text-xl text-background'>
-          Test Button
+          {process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY}
         </Button>
       </div>
     </main>
