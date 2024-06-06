@@ -13,6 +13,9 @@ export function NavigationMenu() {
 
   const navigation = useRouter();
 
+  const currentSearch = usePathname().split('/')[2] as string;
+  console.log('🚀 ~ NavigationMenu ~ currentSearch:', currentSearch);
+
   console.log(selected);
   return (
     <Menubar>
@@ -58,6 +61,15 @@ export function NavigationMenu() {
           Search
         </MenubarTrigger>
       </MenubarMenu>
+      {currentSearch && currentSearch.length > 0 && (
+        <MenubarMenu>
+          {
+            <div className='ml-2 w-full justify-end rounded-md bg-zinc-600 p-1 text-center text-xs text-zinc-50'>
+              Symbol | {currentSearch}
+            </div>
+          }
+        </MenubarMenu>
+      )}
     </Menubar>
   );
 }
