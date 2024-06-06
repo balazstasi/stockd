@@ -1,24 +1,37 @@
 'use client';
-import { SearchIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useSearchParams, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 
-export const SearchSymbol = () => {
-  const [symbol, setSymbol] = useState('');
+export default function Search({ placeholder }: { placeholder: string }) {
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  const pathname = usePathname();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSymbol(e.target.value);
-  };
+  const handleSearch = useDebouncedCallback((term) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set('query', term);
+    } else {
+      params.delete('query');
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 300);
 
   return (
-    <div className='flex w-full max-w-[240px] items-center'>
+    <div className='relative flex flex-1 flex-shrink-0'>
+      <label htmlFor='search' className='sr-only'>
+        Search
+      </label>
       <Input
-        type='text'
-        placeholder='🔎 Search Symbol'
-        className='h-10 w-full'
+        className='peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500'
+        placeholder={placeholder}
+        onChange={(e) => {
+          handleSearch(e.target.value);
+        }}
       />
     </div>
   );
-};
+}

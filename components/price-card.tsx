@@ -11,6 +11,7 @@ interface PriceCardProps {
   close: number;
   volume: number;
   symbol: string;
+  error?: string;
 }
 export const PriceCard = ({
   high,

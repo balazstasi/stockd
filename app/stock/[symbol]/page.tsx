@@ -1,7 +1,6 @@
 import ky from 'ky';
 import { DailyOpenClose } from '@/lib/types';
 import { PriceCard } from '@/components/price-card';
-import { SearchSymbol } from '@/components/search-symbol';
 
 interface StockDetailProps {
   params: {
@@ -10,27 +9,24 @@ interface StockDetailProps {
 }
 
 async function StockDetail({ params }: StockDetailProps) {
-  // const stockData = await fetchDailyStockData(params['symbol'] as string);
+  const stockData = await fetchDailyStockData(params['symbol'] as string);
 
-  // if (!stockData) {
-  //   return <div>Loading...</div>;
-  // }
+  if (!stockData) {
+    return <div>Loading...</div>;
+  }
+
+  if ('error' in stockData) {
+    return (
+      <div className='min-w-screen align-middlemt-2 flex min-h-screen flex-col items-center justify-center justify-items-center overflow-hidden bg-background bg-red-500 p-1 text-xl text-red-100'>
+        {stockData.error}
+      </div>
+    );
+  }
 
   return (
     <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center bg-background align-middle'>
-      <div className='mb-32 w-[240px] py-4'>
-        <SearchSymbol />
-      </div>
       <div className='w-[240px]'>
-        <PriceCard
-          high={1200}
-          low={1100}
-          open={1134}
-          close={1200}
-          volume={4000}
-          symbol={params.symbol}
-        />
-        ;
+        <PriceCard {...stockData} />
       </div>
     </div>
   );
@@ -38,7 +34,7 @@ async function StockDetail({ params }: StockDetailProps) {
 
 const fetchDailyStockData = async (
   symbol: string
-): Promise<DailyOpenClose | null> => {
+): Promise<DailyOpenClose | null | { error: string }> => {
   const API_KEY = process.env.POLYGON_API_KEY;
   const API_URL = process.env.POLYGON_API_URL;
   const API_FUNCTION = 'open-close';
@@ -61,10 +57,9 @@ const fetchDailyStockData = async (
         },
       })
       .json();
-
     return response;
   } catch (error) {
-    console.error(error);
+    return { error: 'Maximum 5 requests per mimute. Please try again later.' };
   }
 
   return null;
