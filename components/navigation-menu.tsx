@@ -64,8 +64,8 @@ export function NavigationMenu() {
       {currentSearch && currentSearch.length > 0 && (
         <MenubarMenu>
           {
-            <div className='ml-2 w-full justify-end rounded-md bg-zinc-600 p-1 text-center text-xs text-zinc-50'>
-              Symbol | {currentSearch}
+            <div className='flex w-full justify-end rounded-md p-1 text-center text-xs text-zinc-50 sm:w-full lg:w-full'>
+              <div className='rounded-md bg-zinc-600 p-1'>{currentSearch}</div>
             </div>
           }
         </MenubarMenu>

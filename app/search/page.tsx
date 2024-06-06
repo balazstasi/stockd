@@ -24,16 +24,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           Search Stocks by Symbol
         </Label>
       </div>
-      <div className='w-full px-4 sm:w-[300px]'>
+      <div className='w-full px-4 lg:max-w-[300px] lg:px-0'>
         <Search placeholder={'Eg. META'} />
       </div>
-      <div className='sm:w-max-[300px] w-full px-4 sm:px-0'>
+      <div className='flex w-full flex-col self-center px-4 lg:max-w-[300px] lg:px-0'>
         <div
           className={`no-scrollbar mt-4 h-[400px] w-full overflow-scroll rounded-t-md ${(searchResults.results ?? []).length < 15 ? 'rounded-b-md' : ''} bg-zinc-200`}
         >
           <SearchResults results={searchResults?.results ?? null} />
           {searchResults?.error && (
-            <div className='flex w-full self-center px-4 align-middle sm:max-w-[300px] sm:px-0'>
+            <div className='flex w-full self-center px-4 align-middle sm:w-full sm:px-0 lg:max-w-[300px]'>
               <div className='mt-2 w-full rounded-md bg-red-500 p-1 text-xl text-red-100 sm:max-w-[300px] sm:px-0'>
                 {searchResults?.error}
               </div>
