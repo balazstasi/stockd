@@ -3,87 +3,138 @@ import { Text } from '@/components/text';
 import { Label } from '@/components/ui/label';
 import ky from 'ky';
 import { SearchResult } from '@/lib/types';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, Dot } from 'lucide-react';
 import { SearchResults } from '@/components/search-results';
+import { ITickerDetails, restClient } from '@polygon.io/client-js';
+import StockList from '@/components/stock-list';
+import { Button } from '@/components/ui/button';
+import { Pagination } from '@/components/pagination';
+
+import('@polygon.io/client-js').then(({ restClient }) => {
+  const globalFetchOptions = {
+    trace: true,
+  };
+  const rest = restClient(
+    process.env.POLYGON_API_KEY,
+    'https://api.polygon.io',
+    globalFetchOptions
+  );
+  rest.stocks
+    .aggregates('TSLA', 1, 'minute', '2023-08-01', '2023-08-01', {
+      limit: 50000,
+    })
+    .then((data: any) => {
+      const resultCount = data.length;
+      console.log('Result count:', resultCount);
+    })
+    .catch((e) => {
+      console.error('An error happened:', e);
+    });
+});
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
   searchResults: { results: SearchResult[]; error: null } | { results: null };
 }
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  let searchResults = { results: [], error: null } as
-    | { results: null; error: string | null }
-    | { results: SearchResult[]; error: null }
-    | null;
-  searchResults = (await fetchSearchTerm(searchParams.query as string)) || null;
+  const searchResults = await fetchSearchTerm({
+    term: searchParams.query as string,
+    cursor: (searchParams?.cursor ?? null) as string | null,
+  });
+
+  const searchResultDetails =
+    (await fetchSearchResultDetails(
+      (searchResults?.results ?? []).map((result) => result.ticker)
+    )) || null;
 
   return (
     <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
       <div className='mb-4 w-full text-center'>
-        <Label htmlFor='terms' className='text-xl'>
+        <Label htmlFor='terms' className='text-3xl'>
           Search Stocks by Symbol
         </Label>
       </div>
-      <div className='w-full px-4 lg:max-w-[300px] lg:px-0'>
+
+      <div className='flex max-h-[calc(100vh-120px)] w-full flex-col self-center overflow-y-scroll px-8 py-8'>
         <Search placeholder={'Eg. META'} />
+        <StockList stocks={searchResultDetails} />
       </div>
-      <div className='flex w-full flex-col self-center px-4 lg:max-w-[300px] lg:px-0'>
-        <div
-          className={`no-scrollbar mt-4 h-[400px] w-full overflow-scroll rounded-t-md ${(searchResults.results ?? []).length < 15 ? 'rounded-b-md' : ''} bg-zinc-200`}
-        >
-          <SearchResults results={searchResults?.results ?? null} />
-          {searchResults?.error && (
-            <div className='flex w-full self-center px-4 align-middle sm:w-full sm:px-0 lg:max-w-[300px]'>
-              <div className='mt-2 w-full rounded-md bg-red-500 p-1 text-xl text-red-100 sm:max-w-[300px] sm:px-0'>
-                {searchResults?.error}
-              </div>
-            </div>
-          )}
-        </div>
-        {(searchResults?.results ?? [])?.length > 15 && (
-          <div className='flex w-full justify-center justify-items-center rounded-b-md bg-zinc-200 px-4 py-2 text-center align-middle sm:w-[300px] sm:px-0'>
-            <ArrowDown className='h-4 w-4 self-center text-center align-middle' />
-          </div>
-        )}
-      </div>
+      <Pagination
+        cursor={
+          searchResults?.next_url != null
+            ? new URL(searchResults?.next_url ?? '').searchParams.get('cursor')
+            : null
+        }
+        url={searchResults?.next_url ?? null}
+      />
     </div>
   );
 }
 
-const fetchSearchTerm = async (
-  term: string
-): Promise<
-  | { results: SearchResult[]; error: null }
-  | { results: null; error: string | null }
-> => {
-  const API_KEY = process.env.POLYGON_API_KEY;
-  const API_URL = process.env.POLYGON_API_URL;
-  const API_FUNCTION = 'v3/reference/tickers';
+const fetchSearchTerm = async ({
+  term,
+  cursor,
+}: {
+  term: string;
+  cursor: string | null;
+}) => {
+  const apiClient = restClient(process.env.POLYGON_API_KEY);
 
-  const REQ_URL = new URL(`${API_URL}/${API_FUNCTION}`);
-
-  REQ_URL.searchParams.append('search', term);
-  REQ_URL.searchParams.append('apiKey', API_KEY!);
-  REQ_URL.searchParams.append('sort', 'name');
-  REQ_URL.searchParams.append('order', 'asc');
-  try {
-    const response: { results: SearchResult[] } = await ky
-      .get(REQ_URL, {
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-        },
-        cache: 'force-cache',
-      })
-      .json();
-
-    return { ...response, error: null };
-  } catch (error) {
-    return {
-      results: null,
-      error:
-        'Maximum 5 requests are allowed per minute. Please try again later',
-    };
+  if (!term) {
+    return null;
   }
 
-  return { results: null, error: '' };
+  if (term.length < 2) {
+    return null;
+  }
+
+  try {
+    const searchResults = await apiClient.reference.tickers(
+      cursor != null
+        ? {
+            search: term,
+            marketType: 'stocks',
+            limit: 5,
+            cursor,
+          }
+        : {
+            search: term,
+            marketType: 'stocks',
+            limit: 5,
+          },
+      {
+        pagination: true,
+      }
+    );
+
+    return searchResults;
+  } catch (error: Error | any) {
+    console.error(error);
+  }
+};
+
+const fetchSearchResultDetails = async (tickers: string[]) => {
+  const apiClient = restClient(
+    process.env.POLYGON_API_KEY,
+    process.env.POLYGON_API_URL,
+    {
+      headers: {
+        Authorozation: `Bearer ${process.env.POLYGON_API_KEY}`,
+      },
+    }
+  );
+
+  try {
+    const promiseArray = tickers.map((ticker) =>
+      apiClient.reference.tickerDetails(ticker)
+    );
+    const searchResults = await Promise.all(promiseArray);
+    console.log(
+      '🚀 ~ fetchSearchResultDetails ~ searchResults:',
+      searchResults
+    );
+    return searchResults;
+  } catch (error: Error | any) {
+    console.error(error);
+  }
 };

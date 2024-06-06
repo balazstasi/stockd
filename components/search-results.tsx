@@ -1,15 +1,15 @@
 'use client';
-import { SearchResult } from '@/lib/types';
+import { ITickers } from '@polygon.io/client-js';
 import { useRouter } from 'next/navigation';
 
 interface SearchResultProps {
-  results: SearchResult[] | null;
+  results: ITickers['results'] | null;
 }
 export const SearchResults = ({ results }: SearchResultProps) => {
   const navigation = useRouter();
   return (
     <>
-      {(results ?? [])?.map((result: SearchResult) => (
+      {(results ?? [])?.map((result: ITickers['results'][number]) => (
         <div
           key={result.ticker}
           className='rounded-md px-2 py-2 hover:cursor-pointer hover:bg-zinc-300 hover:text-zinc-900'
