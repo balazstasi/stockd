@@ -29,11 +29,7 @@ export function NavigationMenu() {
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
         >
-          <Link href={'/'}>
-            <Button variant='link' size='sm'>
-              🏚️ Home
-            </Button>
-          </Link>
+          <Link href={'/'}>🏚️ Home</Link>
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
@@ -44,11 +40,7 @@ export function NavigationMenu() {
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
         >
-          <Link href={'/favorites'}>
-            <Button variant='link' size='sm'>
-              ⭐︎ Favorites
-            </Button>
-          </Link>
+          <Link href={'/favorites'}>⭐︎ Favorites</Link>
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
@@ -59,11 +51,7 @@ export function NavigationMenu() {
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
         >
-          <Link href={'/search'}>
-            <Button variant='link' size='sm'>
-              🔎 Search
-            </Button>
-          </Link>
+          <Link href={'/search'}>🔎 Search</Link>
         </MenubarTrigger>
       </MenubarMenu>
       {currentSearch && currentSearch.length > 0 && (
