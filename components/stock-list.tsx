@@ -60,8 +60,10 @@ export default function StockList({ stocks }: StockListProps) {
               </TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className='hidden md:table-cell'>Price</TableHead>
-              <TableHead className='hidden md:table-cell'>Ticker</TableHead>
+              <TableHead className='hidden md:table-cell'>Market</TableHead>
+              <TableHead className='hidden md:table-cell'>
+                Description
+              </TableHead>
               <TableHead className='hidden md:table-cell'>List Date</TableHead>
               <TableHead>
                 <span className='sr-only'>Actions</span>
@@ -105,8 +107,11 @@ const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
         </Badge>
       </TableCell>
       <TableCell className='hidden md:table-cell'>{stock?.active}</TableCell>
+
       <TableCell className='hidden md:table-cell'>
-        {stock?.ticker?.toUpperCase()}
+        <p className='line-clamp-[10]'>
+          {stock?.description ?? 'No description'}
+        </p>
       </TableCell>
       <TableCell className='hidden md:table-cell'>
         {stock?.list_date ?? 'Unknown'}

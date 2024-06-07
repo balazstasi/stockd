@@ -48,6 +48,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     cursor: (searchParams?.cursor ?? null) as string | null,
   });
 
+  console.log('🚀 ~ SearchPage ~ searchResults:', searchResults);
+
   return (
     <div>
       <div className='sticky my-4 w-full text-center'>
