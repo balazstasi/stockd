@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardFooter } from '@/src/components/ui/card';
 import { LineChartIcon } from 'lucide-react';
 import React from 'react';
 

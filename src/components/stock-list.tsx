@@ -1,23 +1,21 @@
-import Image from 'next/image';
-import { CircleDollarSignIcon, MoreHorizontal } from 'lucide-react';
+'use client';
+import { MoreHorizontal } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/src/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/src/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -25,11 +23,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { DailyOpenClose, SearchResult } from '@/lib/types';
+} from '@/src/components/ui/table';
 import { ITickerDetails } from '@polygon.io/client-js';
-import Search from '@/components/search-symbol';
+import Search from '@/src/components/search-symbol';
 import Link from 'next/link';
+import { useStore } from 'zustand';
+import { useFavorites } from '@/src/store/favorites';
 
 interface StockListProps {
   stocks: Array<ITickerDetails> | null;
@@ -86,6 +85,11 @@ export default function StockList({ stocks }: StockListProps) {
 }
 
 const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
+  const { tickers, addFavorite } = useStore(useFavorites, (s) => ({
+    tickers: s.tickers,
+    addFavorite: s.addTicker,
+  }));
+
   return (
     <TableRow>
       <TableCell className='hidden sm:table-cell'>
@@ -125,11 +129,23 @@ const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <Link href={`/stock/${stock?.ticker}`}>
-              <DropdownMenuItem>📈 Go To Stock Page</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Button variant='ghost'>📈 Go To Stock Page</Button>
+              </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>⭐︎ Add to Favorites</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Button
+                variant='ghost'
+                onClick={() => {
+                  if (stock?.ticker && !tickers.includes(stock?.ticker)) {
+                    addFavorite(stock?.ticker);
+                  }
+                }}
+              >
+                ⭐︎ Add to Favorites
+              </Button>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

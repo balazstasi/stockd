@@ -1,4 +1,4 @@
-import { Label } from '@/components/ui/label';
+import { Label } from '@/src/components/ui/label';
 
 interface TextProps {
   label: string;

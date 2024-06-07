@@ -1,7 +1,7 @@
 import ky from 'ky';
-import { DailyOpenClose } from '@/lib/types';
-import { StockCard } from '@/components/stock-card';
-import { fetchPolygonData } from '@/lib/utils/api';
+import { DailyOpenClose } from '@/src/lib/types';
+import { StockCard } from '@/src/components/stock-card';
+import { fetchPolygonData } from '@/src/lib/utils/api';
 import { ITickerDetails } from '@polygon.io/client-js';
 import { Suspense } from 'react';
 

@@ -1,6 +1,10 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Menubar, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar';
+import { Button } from '@/src/components/ui/button';
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/src/components/ui/menubar';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 

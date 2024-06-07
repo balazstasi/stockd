@@ -1,20 +1,20 @@
-import Search from '@/components/search-symbol';
-import { Text } from '@/components/text';
-import { Label } from '@/components/ui/label';
+import Search from '@/src/components/search-symbol';
+import { Text } from '@/src/components/text';
+import { Label } from '@/src/components/ui/label';
 import ky from 'ky';
-import { SearchResult } from '@/lib/types';
+import { SearchResult } from '@/src/lib/types';
 import { ArrowDown, Dot } from 'lucide-react';
-import { SearchResults } from '@/components/search-results';
+import { SearchResults } from '@/src/components/search-results';
 import {
   IDailyOpenClose,
   ITickerDetails,
   ITickers,
   restClient,
 } from '@polygon.io/client-js';
-import StockList from '@/components/stock-list';
-import { Button } from '@/components/ui/button';
-import { Pagination } from '@/components/pagination';
-import { fetchPolygonData } from '@/lib/utils/api';
+import StockList from '@/src/components/stock-list';
+import { Button } from '@/src/components/ui/button';
+import { Pagination } from '@/src/components/pagination';
+import { fetchPolygonData } from '@/src/lib/utils/api';
 
 import('@polygon.io/client-js').then(({ restClient }) => {
   const globalFetchOptions = {

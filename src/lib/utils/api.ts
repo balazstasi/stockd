@@ -20,6 +20,7 @@ export const fetchPolygonData = async <T>({
     params: {
       ...params,
       apiKey,
+      cache: 'force-cache',
     },
   };
 
