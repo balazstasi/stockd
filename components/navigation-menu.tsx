@@ -1,5 +1,7 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import { Menubar, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface NavigationMenuProps {
@@ -11,14 +13,10 @@ export function NavigationMenu() {
     selected = 'home';
   }
 
-  const navigation = useRouter();
-
   const currentSearch = usePathname().split('/')[2] as string;
-  console.log('🚀 ~ NavigationMenu ~ currentSearch:', currentSearch);
 
-  console.log(selected);
   return (
-    <Menubar>
+    <Menubar className='justify-center bg-muted'>
       <MenubarMenu>
         <MenubarTrigger
           className={
@@ -26,11 +24,12 @@ export function NavigationMenu() {
               ? 'bg-accent text-accent-foreground'
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
-          onClick={() => {
-            navigation.push('/');
-          }}
         >
-          Home
+          <Link href={'/'}>
+            <Button variant='link' size='sm'>
+              🏚️ Home
+            </Button>
+          </Link>
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
@@ -40,11 +39,12 @@ export function NavigationMenu() {
               ? 'bg-accent text-accent-foreground'
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
-          onClick={() => {
-            navigation.push('/favorites');
-          }}
         >
-          Favorites
+          <Link href={'/favorites'}>
+            <Button variant='link' size='sm'>
+              ⭐︎ Favorites
+            </Button>
+          </Link>
         </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
@@ -54,11 +54,12 @@ export function NavigationMenu() {
               ? 'bg-accent text-accent-foreground'
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
-          onClick={() => {
-            navigation.push('/search');
-          }}
         >
-          Search
+          <Link href={'/search'}>
+            <Button variant='link' size='sm'>
+              🔎 Search
+            </Button>
+          </Link>
         </MenubarTrigger>
       </MenubarMenu>
       {currentSearch && currentSearch.length > 0 && (
