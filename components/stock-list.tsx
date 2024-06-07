@@ -59,7 +59,7 @@ export default function StockList({ stocks }: StockListProps) {
             </TableRow>
           </TableHeader>
           <TableBody className='overflow-y-scroll'>
-            {stocks?.map((stock: ITickerDetails) => (
+            {stocks?.map((stock) => (
               <StockRow key={stock?.results?.ticker} stock={stock.results} />
             )) ?? <div className='w-full'>No results</div>}
           </TableBody>
@@ -75,7 +75,6 @@ export default function StockList({ stocks }: StockListProps) {
 }
 
 const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
-  console.log('🚀 ~ StockRow ~ stock:', stock);
   return (
     <TableRow>
       <TableCell className='hidden sm:table-cell'>
@@ -96,7 +95,7 @@ const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
           {stock?.active ? 'ACTIVE' : 'INACTIVE'}
         </Badge>
       </TableCell>
-      <TableCell className='hidden md:table-cell'>{stock?.market}</TableCell>
+      <TableCell className='hidden md:table-cell'>{stock?.active}</TableCell>
       <TableCell className='hidden md:table-cell'>
         {stock?.ticker?.toUpperCase()}
       </TableCell>
