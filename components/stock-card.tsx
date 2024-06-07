@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardFooter } from '@/components/ui/card';
+import { LineChartIcon } from 'lucide-react';
 import React from 'react';
 
 import 'tailwindcss/tailwind.css';
@@ -20,9 +21,12 @@ type StockCardProps = {
 
 const StockCard: React.FC<StockCardProps> = ({ data }) => {
   return (
-    <Card className='mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-lg'>
-      <CardHeader className='bg-foreground p-4 text-white'>
-        <h2 className='text-2xl font-semibold'>{data.companyName}</h2>
+    <Card className='mx-auto max-w-sm overflow-hidden rounded-lg bg-background shadow-lg'>
+      <CardHeader className='bg-foreground p-4 text-foreground'>
+        <div className='flex items-center justify-between space-x-2 text-background'>
+          <h2 className='text-2xl font-semibold'>{data.companyName}</h2>
+          <LineChartIcon className='h-4 w-4' />
+        </div>
         <p className='p-1 text-sm font-semibold text-background'>
           {data.symbol}
         </p>
@@ -38,24 +42,26 @@ const StockCard: React.FC<StockCardProps> = ({ data }) => {
         </div>
         <div className='grid grid-cols-2 gap-4'>
           <div>
-            <span className='block text-foreground'>High</span>
-            <span className='text-green-500'>${data.highPrice.toFixed(2)}</span>
+            <span className='block cursor-pointer select-none rounded-md p-1 text-xs font-bold text-foreground text-green-400 hover:bg-green-400 hover:text-background hover:text-white active:bg-green-500'>
+              ↑<span className='font-normal'>${data.highPrice.toFixed(2)}</span>
+            </span>
           </div>
           <div>
-            <span className='block text-foreground'>Low</span>
-            <span className='text-red-500'>${data.lowPrice.toFixed(2)}</span>
+            <span className='block cursor-pointer select-none rounded-md p-1 text-xs font-bold text-red-400 hover:bg-red-400 hover:text-background hover:text-white active:bg-red-500'>
+              ↓<span className='font-normal'>${data.lowPrice.toFixed(2)}</span>
+            </span>
           </div>
           <div>
-            <span className='block text-foreground'>Open</span>
+            <span className='block font-semibold text-foreground'>Open</span>
             <span>${data.openPrice.toFixed(2)}</span>
           </div>
           <div>
-            <span className='block text-foreground'>Close</span>
+            <span className='block font-semibold text-foreground'>Close</span>
             <span>${data.previousClosePrice.toFixed(2)}</span>
           </div>
           <div className='col-span-2 mt-4'>
             <span className='block text-foreground'>
-              Volume | {data.volume.toLocaleString()}
+              Volume <b>|</b> {data.volume.toLocaleString()}
             </span>
           </div>
         </div>

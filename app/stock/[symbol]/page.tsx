@@ -37,22 +37,19 @@ async function StockDetail({ params }: StockDetailProps) {
   const companyName = stockDetails.results?.name ?? '';
 
   return (
-    <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center bg-background align-middle'>
-      <div className='max-w-[280px]'>
-        {/* <PriceCard {...stockData} /> */}
-        <StockCard
-          data={{
-            symbol,
-            companyName,
-            currentPrice,
-            highPrice,
-            lowPrice,
-            openPrice: 0,
-            previousClosePrice,
-            volume,
-          }}
-        />
-      </div>
+    <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center bg-background bg-muted align-middle'>
+      <StockCard
+        data={{
+          symbol,
+          companyName,
+          currentPrice,
+          highPrice,
+          lowPrice,
+          openPrice,
+          previousClosePrice,
+          volume,
+        }}
+      />
     </div>
   );
 }
