@@ -1,6 +1,6 @@
 import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/cn';
 import { NavigationMenu } from '@/components/navigation-menu';
 
 const fontSans = FontSans({
