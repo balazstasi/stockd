@@ -28,21 +28,31 @@ import {
 } from '@/components/ui/table';
 import { DailyOpenClose, SearchResult } from '@/lib/types';
 import { ITickerDetails } from '@polygon.io/client-js';
+import Search from '@/components/search-symbol';
+import Link from 'next/link';
 
 interface StockListProps {
   stocks: Array<ITickerDetails> | null;
 }
 export default function StockList({ stocks }: StockListProps) {
   return (
-    <Card>
+    <Card className='pb-8'>
       <CardHeader>
-        <CardTitle>Stocks</CardTitle>
+        <div className='flex items-center justify-between'>
+          <CardTitle>Stocks</CardTitle>
+          <div className='hidden md:block'>
+            <Search placeholder={'Eg. META'} />
+          </div>
+        </div>
         <CardDescription>
           Search for stocks and see their details
         </CardDescription>
+        <div className='w-full md:hidden'>
+          <Search placeholder={'Eg. META'} />
+        </div>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className='max-h-[calc(50%-120px)] overflow-y-scroll'>
           <TableHeader>
             <TableRow>
               <TableHead className='hidden w-[100px] sm:table-cell'>
@@ -61,15 +71,14 @@ export default function StockList({ stocks }: StockListProps) {
           <TableBody className='overflow-y-scroll'>
             {stocks?.map((stock) => (
               <StockRow key={stock?.results?.ticker} stock={stock.results} />
-            )) ?? <div className='w-full'>No results</div>}
+            )) ?? (
+              <div className='text-md w-full pt-4 text-muted-foreground'>
+                No results
+              </div>
+            )}
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter>
-        <div className='text-xs text-muted-foreground'>
-          Showing <strong>1-10</strong> of <strong>32</strong> products
-        </div>
-      </CardFooter>
     </Card>
   );
 }
@@ -112,8 +121,10 @@ const StockRow = ({ stock }: { stock: ITickerDetails['results'] }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <Link href={`/stock/${stock?.ticker}`}>
+              <DropdownMenuItem>📈 Go To Stock Page</DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem>⭐︎ Add to Favorites</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

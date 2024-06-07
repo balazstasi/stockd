@@ -44,30 +44,32 @@ interface SearchPageProps {
 }
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const searchResults = await fetchSearchTerm({
-    term: searchParams.query as string,
+    term: (searchParams?.query ?? '') as string,
     cursor: (searchParams?.cursor ?? null) as string | null,
   });
 
   return (
-    <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
-      <div className='mb-4 w-full text-center'>
+    <div>
+      <div className='sticky my-4 w-full text-center'>
         <Label htmlFor='terms' className='text-3xl'>
           Search Stocks by Symbol
         </Label>
       </div>
-
-      <div className='flex max-h-[calc(100vh-120px)] w-full flex-col self-center overflow-y-scroll px-8 py-8'>
-        <Search placeholder={'Eg. META'} />
-        <StockList stocks={searchResults?.results ?? null} />
+      <div className='min-w-screen flex flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
+        <div className='flex max-h-[calc(100vh-120px)] w-full flex-col self-center overflow-y-scroll px-2 lg:px-8 lg:py-8'>
+          <StockList stocks={searchResults?.results ?? null} />
+          {/* <Pagination
+          cursor={
+            searchResults?.next_url != null
+              ? new URL(searchResults?.next_url ?? '').searchParams.get(
+                  'cursor'
+                )
+              : null
+          }
+          url={searchResults?.next_url ?? null}
+        /> */}
+        </div>
       </div>
-      {/* <Pagination
-        cursor={
-          searchResults?.next_url != null
-            ? new URL(searchResults?.next_url ?? '').searchParams.get('cursor')
-            : null
-        }
-        url={searchResults?.next_url ?? null}
-      /> */}
     </div>
   );
 }
@@ -79,6 +81,10 @@ const fetchSearchTerm = async ({
   term: string;
   cursor: string | null;
 }) => {
+  if (!term || term === '') {
+    return;
+  }
+
   const searchResults = await fetchPolygonData<{
     results: ITickers['results'] | null;
     next_url: string | null;
@@ -106,12 +112,12 @@ const fetchSearchTerm = async ({
   }
 
   const searchResultStockDetails = await fetchSearchResultDetails(tickerList);
-  const stockListDailyOpenClose =
-    await fetchStockListDailyOpenClose(tickerList);
+  // const stockListDailyOpenClose =
+  //   await fetchStockListDailyOpenClose(tickerList);
 
   return {
     results: searchResultStockDetails,
-    dailyOpenClose: stockListDailyOpenClose,
+    // dailyOpenClose: stockListDailyOpenClose,
     next_url: searchResults?.next_url ?? null,
   };
 };
