@@ -22,9 +22,11 @@ type StockCardProps = {
 const StockCard: React.FC<StockCardProps> = ({ data }) => {
   return (
     <Card className='mx-auto max-w-sm overflow-hidden rounded-lg bg-background shadow-lg'>
-      <CardHeader className='bg-foreground p-4 text-foreground'>
+      <CardHeader className='bg-foreground p-4 text-foreground shadow'>
         <div className='flex items-center justify-between space-x-2 text-background'>
-          <h2 className='text-2xl font-semibold'>{data.companyName}</h2>
+          <h2 className='max-w-[200px] truncate text-2xl font-semibold'>
+            {data.companyName}
+          </h2>
           <LineChartIcon className='h-4 w-4' />
         </div>
         <p className='p-1 text-sm font-semibold text-background'>
