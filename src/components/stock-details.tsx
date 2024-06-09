@@ -105,8 +105,7 @@ export function StockDetails(props: StockDetailProps) {
                 <StarFilledIcon className='h-6 w-6 text-yellow-500' />
               ) : (
                 <StarIcon className='h-6 w-6 text-foreground' />
-              )}{' '}
-              {`${isFavorite(props.symbol) ? 'Remove from Favorites' : 'Add'}`}
+              )}
             </Button>
           </div>
         </div>
