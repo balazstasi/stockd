@@ -2,20 +2,22 @@ import Search from '@/src/components/search-symbol';
 import { Text } from '@/src/components/text';
 import { Label } from '@/src/components/ui/label';
 import ky from 'ky';
-import { SearchResult } from '@/src/lib/types';
+import { DailyOpenClose, SearchResult } from '@/src/lib/types';
 import { ArrowDown, Dot, SearchIcon } from 'lucide-react';
 import { SearchResults } from '@/src/components/search-results';
 import {
+  IAggsGroupedDaily,
   IDailyOpenClose,
   ITickerDetails,
   ITickers,
   restClient,
 } from '@polygon.io/client-js';
-import StockList from '@/src/components/stock-list';
+
 import { Button } from '@/src/components/ui/button';
 import { Pagination } from '@/src/components/pagination';
-import { fetchPolygonData } from '@/src/lib/utils/api';
+import { fetchPolygonData, fetchPolygonListData } from '@/src/lib/utils/api';
 import { Title } from '@/src/components/title';
+import { StockList } from '@/src/components/stock-list/stock-list';
 
 import('@polygon.io/client-js').then(({ restClient }) => {
   const globalFetchOptions = {
@@ -41,19 +43,24 @@ import('@polygon.io/client-js').then(({ restClient }) => {
 
 interface SearchPageProps {
   searchParams: { [key: string]: string | string[] | undefined };
-  searchResults: { results: SearchResult[]; error: null } | { results: null };
 }
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const searchResults = await fetchSearchTerm({
+  const searches = await fetchSearchTerm({
     term: (searchParams?.query ?? '') as string,
     cursor: (searchParams?.cursor ?? null) as string | null,
   });
 
+  const dailyStats = await fetchStockListGroupedDaily();
+
   return (
     <div>
-      <div className='min-w-screen flex flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
+      <div className='flex min-w-full flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
         <div className='flex max-h-[calc(100vh-120px)] w-full flex-col self-center overflow-y-scroll px-2 lg:px-8 lg:py-8'>
-          <StockList stocks={searchResults?.results ?? null} />
+          {/* <StockList stocks={results ?? null} /> */}
+          <StockList
+            stocks={searches?.results?.results ?? null}
+            dailyStats={dailyStats}
+          />
           {/* <Pagination
           cursor={
             searchResults?.next_url != null
@@ -89,12 +96,10 @@ const fetchSearchTerm = async ({
     params: !cursor
       ? {
           search: term,
-          limit: 10,
         }
       : {
           search: term,
           cursor: cursor,
-          limit: 10,
         },
     apiKey: process.env.POLYGON_API_KEY as string,
   });
@@ -104,18 +109,14 @@ const fetchSearchTerm = async ({
     .filter(Boolean) as string[];
 
   if (!tickerList || tickerList.length === 0) {
-    return null;
+    return { results: null, details: null, dailyStats: null };
   }
 
-  const searchResultStockDetails = await fetchSearchResultDetails(tickerList);
+  // const searchResultStockDetails = await fetchSearchResultDetails(tickerList);
   // const stockListDailyOpenClose =
-  //   await fetchStockListDailyOpenClose(tickerList);
-
-  return {
-    results: searchResultStockDetails,
-    // dailyOpenClose: stockListDailyOpenClose,
-    next_url: searchResults?.next_url ?? null,
-  };
+  // await fetchStockListDailyOpenClose(tickerList);
+  // console.log(stockListDailyOpenClose);
+  return { results: searchResults, details: null, dailyStats: null };
 };
 
 const fetchSearchResultDetails = async (tickers: string[]) => {
@@ -123,33 +124,43 @@ const fetchSearchResultDetails = async (tickers: string[]) => {
     return null;
   }
 
-  console.log('🚀 ~ fetchSearchResultDetails ~ tickers:', tickers);
-
-  const searchResults = await Promise.all(
-    tickers.map((ticker) =>
-      fetchPolygonData<ITickerDetails>({
-        endpoint: `v3/reference/tickers/${ticker}`,
-        apiKey: process.env.POLYGON_API_KEY as string,
-      })
-    )
+  const searchResults = fetchPolygonListData<ITickerDetails[]>(
+    tickers.map((ticker) => ({
+      endpoint: `v3/reference/tickers/${ticker}`,
+      apiKey: process.env.POLYGON_API_KEY as string,
+    }))
   );
 
-  console.log('🚀 ~ fetchSearchResultDetails ~ searchResults:', searchResults);
   return searchResults;
 };
 
 const fetchStockListDailyOpenClose = async (tickers: string[]) => {
+  if (tickers.length === 0 || tickers == null) {
+    return null;
+  }
   const YESTERDAY = new Date(Date.now() - 24 * 60 * 60 * 1000)
     .toISOString()
     .split('T')[0];
-  const dailyOpenCloseList = await Promise.all(
-    tickers.map((ticker) =>
-      fetchPolygonData<IDailyOpenClose>({
-        endpoint: `v1/open-close/${ticker}/${YESTERDAY}`,
-        apiKey: process.env.POLYGON_API_KEY as string,
-      })
-    )
+  const dailyOpenCloseList = fetchPolygonListData<DailyOpenClose[]>(
+    tickers.map((ticker) => ({
+      endpoint: `v1/open-close/${ticker}/2024-06-01`,
+      apiKey: process.env.POLYGON_API_KEY as string,
+    }))
   );
 
   return dailyOpenCloseList;
+};
+
+const fetchStockListGroupedDaily = async () => {
+  const YESTERDAY = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const YESTERDAY_STR = YESTERDAY.toISOString().split('T')[0];
+  const stockListBarsGroupedDaily = fetchPolygonData<IAggsGroupedDaily>({
+    endpoint: `v2/aggs/grouped/locale/us/market/stocks/2023-01-09`,
+    params: {
+      adjusted: true,
+    },
+    apiKey: process.env.POLYGON_API_KEY as string,
+  });
+
+  return stockListBarsGroupedDaily;
 };

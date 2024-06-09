@@ -1,27 +1,5 @@
-export interface DailyOpenClose {
-  afterHours: number;
-  close: number;
-  from: `${string}-${string}-${string}`;
-  high: number;
-  low: number;
-  open: number;
-  preMarket: number;
-  status: string;
-  symbol: string;
-  volume: number;
-}
+import { IAggsGroupedDaily, ITickers } from '@polygon.io/client-js';
+import { ValuesType } from 'utility-types';
 
-export interface SearchResult {
-  ticker: string;
-  name: string;
-  market: string;
-  locale: string;
-  primary_exchange: string;
-  type: string;
-  active: boolean;
-  currency_name: string;
-  cik: string;
-  composite_figi: string;
-  share_class_figi: string;
-  last_updated_utc: string;
-}
+export type ITickerResult = ValuesType<ITickers['results']>;
+export type ITickerAggsGroupedDaily = ValuesType<IAggsGroupedDaily['results']>;

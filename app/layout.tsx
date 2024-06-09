@@ -25,10 +25,9 @@ export default function RootLayout({
         <div>
           <NavigationMenu />
         </div>
-        <div>
-          <div>
-            <Title />
-          </div>
+        <div className='bg-background'>
+          <Title />
+
           <div>{children}</div>
         </div>
       </body>
