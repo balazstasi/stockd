@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { useStore } from 'zustand';
 import { MoreHorizontal, StarIcon } from 'lucide-react';
 import { ValuesType } from 'utility-types';
-import { StarFilledIcon } from '@radix-ui/react-icons';
+import { DotsHorizontalIcon, StarFilledIcon } from '@radix-ui/react-icons';
 
 type ITickerResult = ValuesType<ITickers['results']>;
 export const StockListItem = ({
@@ -94,24 +94,40 @@ export const StockListItem = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end' className='bg-background'>
             <DropdownMenuItem>
-              <Button variant='ghost'>
+              <Button variant='link'>
                 <Link href={`/stock/${metadata.ticker}`}>
-                  📈 Go To Stock Page
+                  <div className='flex flex-row'>
+                    <DotsHorizontalIcon className='mr-1 h-4 w-4 self-center' />
+                    <p>View Details</p>
+                  </div>
                 </Link>
               </Button>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Button
-                variant='ghost'
+                variant='link'
                 onClick={() => {
                   if (metadata.ticker == null) {
                     return;
                   }
-
+                  if (isFavorite(metadata.ticker)) {
+                    removeFavorite(metadata.ticker);
+                    return;
+                  }
                   addFavorite(metadata.ticker);
                 }}
               >
-                ⭐︎ Add to Favorites
+                {isFavorite(metadata.ticker) ? (
+                  <div className='flex flex-row'>
+                    <StarFilledIcon className='mr-1 h-4 w-4 self-center text-yellow-500' />{' '}
+                    Remove from Favorites
+                  </div>
+                ) : (
+                  <div className='flex flex-row'>
+                    <StarIcon className='mr-1 h-4 w-4 self-center' /> Add to
+                    Favorites
+                  </div>
+                )}
               </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>

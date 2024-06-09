@@ -64,7 +64,7 @@ export function StockDetails(props: StockDetailProps) {
                   ${props.price?.currentPrice.toFixed(2)}
                 </div>
                 <div className='text-sm text-gray-500 dark:text-gray-400'>
-                  {dailyIncrease.toFixed(2) + '%'}
+                  {dailyIncrease.toFixed(2)}
                 </div>
               </div>
             </div>

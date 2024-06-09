@@ -25,7 +25,16 @@ async function StockDetail({ params }: StockDetailProps) {
   const companyName = details?.results?.name ?? '';
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className='flex min-h-screen w-full flex-col items-center justify-center justify-items-center bg-background px-4 align-middle'>
+          {/* Loading spinner */}
+          <div className='flex min-h-screen w-full flex-col items-center justify-center justify-items-center bg-background px-4 align-middle'>
+            <div className='loading-spinner'></div>
+          </div>
+        </div>
+      }
+    >
       <div className='flex min-h-screen w-full flex-col items-center justify-center justify-items-center bg-background px-4 align-middle'>
         <StockDetails
           name={details?.results?.name}
