@@ -1,68 +1,56 @@
 'use client';
-import { Button } from '@/src/components/ui/button';
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-} from '@/src/components/ui/menubar';
+import { cn } from '@/src/lib/utils/cn';
+import { HomeIcon, HeartIcon, SearchIcon } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-interface NavigationMenuProps {
-  selected?: 'home' | 'favorites' | 'search';
-}
 export function NavigationMenu() {
-  let selected = usePathname().split('/')[1] as NavigationMenuProps['selected'];
-  if ((selected as string) === '/' || (selected as string) === '') {
-    selected = 'home';
-  }
-
-  const currentSearch = usePathname().split('/')[2] as string;
-
+  const selected = usePathname();
   return (
-    <Menubar className='justify-center bg-muted'>
-      <MenubarMenu>
-        <MenubarTrigger
-          className={
-            selected === 'home'
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-          }
-        >
-          <Link href={'/'}>🏚️ Home</Link>
-        </MenubarTrigger>
-      </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger
-          className={
-            selected === 'favorites'
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-          }
-        >
-          <Link href={'/favorites'}>⭐︎ Favorites</Link>
-        </MenubarTrigger>
-      </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger
-          className={
-            selected === 'search'
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-          }
-        >
-          <Link href={'/search'}>🔎 Search</Link>
-        </MenubarTrigger>
-      </MenubarMenu>
-      {currentSearch && currentSearch.length > 0 && (
-        <MenubarMenu>
-          {
-            <div className='flex w-full justify-end rounded-md p-1 text-center text-xs text-zinc-50 sm:w-full lg:w-full'>
-              <div className='rounded-md bg-zinc-600 p-1'>{currentSearch}</div>
-            </div>
-          }
-        </MenubarMenu>
-      )}
-    </Menubar>
+    <header className='fixed left-0 top-0 z-50 w-full bg-transparent shadow-md dark:bg-gray-900'>
+      <div className='container mx-auto flex items-center justify-center px-4 py-3 md:px-6'>
+        <nav className='flex items-center gap-6'>
+          <Link
+            href='/#'
+            className={cn(
+              'flex items-center gap-2 font-semibold text-gray-900 underline-offset-4 hover:underline dark:text-gray-50',
+              {
+                underline: selected === '/',
+              }
+            )}
+            prefetch={false}
+          >
+            <HomeIcon className='h-5 w-5' />
+            Home
+          </Link>
+          <Link
+            href='/favorites'
+            className={cn(
+              'flex items-center gap-2 font-semibold text-gray-900 underline-offset-4 hover:underline dark:text-gray-50',
+              {
+                underline: selected === '/favorites',
+              }
+            )}
+            prefetch={false}
+          >
+            <HeartIcon className='h-5 w-5' />
+            Favorites
+          </Link>
+          <Link
+            href='/search'
+            className={cn(
+              'flex items-center gap-2 font-semibold text-gray-900 underline-offset-4 hover:underline dark:text-gray-50',
+              {
+                underline: selected === '/search',
+              }
+            )}
+            prefetch={false}
+          >
+            <SearchIcon className='h-5 w-5' />
+            Search
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 }

@@ -3,7 +3,7 @@ import { Text } from '@/src/components/text';
 import { Label } from '@/src/components/ui/label';
 import ky from 'ky';
 import { SearchResult } from '@/src/lib/types';
-import { ArrowDown, Dot } from 'lucide-react';
+import { ArrowDown, Dot, SearchIcon } from 'lucide-react';
 import { SearchResults } from '@/src/components/search-results';
 import {
   IDailyOpenClose,
@@ -15,6 +15,7 @@ import StockList from '@/src/components/stock-list';
 import { Button } from '@/src/components/ui/button';
 import { Pagination } from '@/src/components/pagination';
 import { fetchPolygonData } from '@/src/lib/utils/api';
+import { Title } from '@/src/components/title';
 
 import('@polygon.io/client-js').then(({ restClient }) => {
   const globalFetchOptions = {
@@ -48,15 +49,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     cursor: (searchParams?.cursor ?? null) as string | null,
   });
 
-  console.log('🚀 ~ SearchPage ~ searchResults:', searchResults);
-
   return (
     <div>
-      <div className='sticky my-4 w-full text-center'>
-        <Label htmlFor='terms' className='text-3xl'>
-          Search Stocks by Symbol
-        </Label>
-      </div>
       <div className='min-w-screen flex flex-col items-center justify-center justify-items-center overflow-hidden bg-background align-middle'>
         <div className='flex max-h-[calc(100vh-120px)] w-full flex-col self-center overflow-y-scroll px-2 lg:px-8 lg:py-8'>
           <StockList stocks={searchResults?.results ?? null} />

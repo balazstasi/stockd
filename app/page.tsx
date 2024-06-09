@@ -5,8 +5,8 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center bg-background'>
-      <div className='-mt-32 flex flex-col items-center justify-center self-center px-8 text-foreground'>
+    <main className='mt-32 flex min-h-screen flex-col items-center bg-background'>
+      <div className='mt-0 flex flex-col items-center justify-center self-center px-8 text-foreground'>
         <div className='text-bold flex-col items-center justify-center self-center py-4 text-4xl'>
           {"STOCK'D"}
         </div>

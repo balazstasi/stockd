@@ -2,6 +2,7 @@ import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/src/lib/utils/cn';
 import { NavigationMenu } from '@/src/components/navigation-menu';
+import { Title } from '@/src/components/title';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -24,7 +25,12 @@ export default function RootLayout({
         <div>
           <NavigationMenu />
         </div>
-        {children}
+        <div>
+          <div>
+            <Title />
+          </div>
+          <div>{children}</div>
+        </div>
       </body>
     </html>
   );
