@@ -18,7 +18,7 @@ export const fetchPolygonData = async <T>({
     url: `${baseUrl}/${endpoint}`,
     params: {
       ...params,
-      apiKey,
+      apiKey: apiKey ?? process.env.POLYGON_API_KEY,
       cache: 'force-cache',
     },
   };
@@ -57,7 +57,7 @@ export const fetchPolygonListData = async <T>(
       url: `${baseUrl}/${endpoint}`,
       params: {
         ...params,
-        apiKey,
+        apiKey: apiKey ?? process.env.POLYGON_API_KEY,
         cache: 'force-cache',
       },
     })
