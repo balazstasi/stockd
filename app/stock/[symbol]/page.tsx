@@ -13,7 +13,6 @@ interface StockDetailProps {
 async function StockDetail({ params }: StockDetailProps) {
   const details = await fetchStockDetails(params.symbol);
   const stockOpenClose = await fetchOpenClose(params.symbol);
-  const aggs = await fetchStockListGroupedDaily();
   const bars = await fetchStockAggregateBars();
 
   const symbol = stockOpenClose?.symbol ?? '';
@@ -42,18 +41,6 @@ async function StockDetail({ params }: StockDetailProps) {
             volume,
           }}
         />
-        {/* <StockCard
-          data={{
-            symbol,
-            companyName,
-            currentPrice,s
-            highPrice,
-            lowPrice,
-            openPrice,
-            previousClosePrice,
-            volume,
-          }}
-        /> */}
       </div>
     </Suspense>
   );
@@ -101,15 +88,15 @@ const fetchStockAggregateBars = async () => {
   const TWO_DAYS_AGO = new Date(Date.now() - 24 * 60 * 60 * 1000 * 2);
   const TWO_DAYS_AGO_STR = TWO_DAYS_AGO.toISOString().split('T')[0];
 
-  const stockListBarsGroupedDaily = fetchPolygonData<ITickerAggsGroupedDaily[]>(
-    {
-      endpoint: `v2/aggs/ticker/AAPL/range/1/day/${ONE_MONTH_AGO_STR}/${TWO_DAYS_AGO_STR}`,
-      params: {
-        adjusted: true,
-      },
-      apiKey: process.env.POLYGON_API_KEY as string,
-    }
-  );
+  const stockListBarsGroupedDaily = fetchPolygonData<{
+    results: ITickerAggsGroupedDaily[];
+  }>({
+    endpoint: `v2/aggs/ticker/AAPL/range/1/day/${ONE_MONTH_AGO_STR}/${TWO_DAYS_AGO_STR}`,
+    params: {
+      adjusted: true,
+    },
+    apiKey: process.env.POLYGON_API_KEY as string,
+  });
 
   return stockListBarsGroupedDaily;
 };

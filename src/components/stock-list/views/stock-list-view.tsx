@@ -31,6 +31,7 @@ import { StockListItem } from '@/src/components/stock-list/stock-list-item';
 import { Fragment } from 'react';
 import { ValuesType } from 'utility-types';
 import { ITickerResult } from '@/src/lib/types';
+import { useFavorites } from '@/src/store/favorites';
 
 interface StockListProps {
   metadata: ITickerResult[] | null;

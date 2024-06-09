@@ -6,7 +6,6 @@ import { StarIcon } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { useStore } from 'zustand';
 import { useFavorites } from '@/src/store/favorites';
-import { cn } from '@/src/lib/utils/cn';
 import { StarFilledIcon } from '@radix-ui/react-icons';
 
 interface StockDetailProps {
@@ -122,7 +121,7 @@ export function StockDetails(props: StockDetailProps) {
 }
 
 interface LineChartProps {
-  data: IAggsGroupedDaily['results'];
+  data: { x: string; y: string }[];
 }
 
 const LineChart = ({ data }: LineChartProps) => {

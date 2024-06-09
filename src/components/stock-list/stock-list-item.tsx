@@ -15,8 +15,9 @@ import {
 import { Badge } from '@/src/components/ui/badge';
 import Link from 'next/link';
 import { useStore } from 'zustand';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, StarIcon } from 'lucide-react';
 import { ValuesType } from 'utility-types';
+import { StarFilledIcon } from '@radix-ui/react-icons';
 
 type ITickerResult = ValuesType<ITickers['results']>;
 export const StockListItem = ({
@@ -26,9 +27,14 @@ export const StockListItem = ({
   metadata: ITickerResult;
   prices: IAggsGroupedDaily['results'][number] | null;
 }) => {
-  const { addFavorite } = useStore(useFavorites, ({ addTicker }) => ({
-    addFavorite: addTicker,
-  }));
+  const { favorites, addFavorite, isFavorite, removeFavorite } = useFavorites(
+    (store) => ({
+      favorites: store.tickers,
+      addFavorite: store.addTicker,
+      removeFavorite: store.removeTicker,
+      isFavorite: (ticker: string) => store.tickers.includes(ticker),
+    })
+  );
 
   if (metadata == null || prices == null) {
     return <div>No data</div>;
@@ -37,11 +43,34 @@ export const StockListItem = ({
   return (
     <TableRow>
       <TableCell className='hidden sm:table-cell'>
-        <div className='w-20 rounded-md bg-foreground p-1 text-center font-semibold text-background'>
+        <div className='w-20 self-center rounded-md bg-foreground p-1 text-center font-semibold text-background'>
           {metadata.ticker?.toUpperCase()}
         </div>
       </TableCell>
-      <TableCell className='font-medium'>{metadata.name}</TableCell>
+      <TableCell className='flex flex-row font-medium'>
+        <p className='self-center'>{metadata.name}</p>
+        {isFavorite(metadata.ticker) && (
+          <Button
+            className='self-center'
+            variant='ghost'
+            size='icon'
+            onClick={() => removeFavorite(metadata.ticker)}
+          >
+            <StarFilledIcon className='h-4 w-4 text-yellow-500' />
+          </Button>
+        )}
+
+        {!isFavorite(metadata.ticker) && (
+          <Button
+            className='self-center'
+            variant='ghost'
+            size='icon'
+            onClick={() => addFavorite(metadata.ticker)}
+          >
+            <StarIcon className='h-4 w-4' />
+          </Button>
+        )}
+      </TableCell>
       <TableCell id='low' className='text-red-400'>
         <p>${prices?.h}</p>
       </TableCell>
