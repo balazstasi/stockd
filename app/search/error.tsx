@@ -1,4 +1,4 @@
-'use client'; // Error components must be Client Components
+'use client';
 
 import { Button } from '@/src/components/ui/button';
 import { useEffect } from 'react';
@@ -11,7 +11,6 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
@@ -23,19 +22,12 @@ export default function Error({
           <p className='mx-auto mt-2 max-w-[400px] text-center text-lg'>
             {error.message}
           </p>
-
-          <p className='mx-auto mt-2 max-w-[400px] text-center text-lg'>
-            <span>Digest | </span> {error.digest}
-          </p>
         </div>
 
         <Button
           variant='secondary'
           className='mt-4 justify-center text-lg font-semibold text-foreground'
-          onClick={
-            // Attempt to recover by trying to re-render the segment
-            () => reset()
-          }
+          onClick={() => reset()}
         >
           Try again
         </Button>

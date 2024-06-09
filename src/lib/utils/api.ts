@@ -11,7 +11,7 @@ export const fetchPolygonData = async <T>({
   params = {},
   apiKey,
 }: PolygonApiConfig): Promise<T> => {
-  const baseUrl = 'https://api.polygon.io';
+  const baseUrl = process.env.POLYGON_API_URL;
 
   const config: AxiosRequestConfig = {
     method: 'GET',
@@ -49,7 +49,7 @@ interface PolygonApiRequest {
 export const fetchPolygonListData = async <T>(
   requests: PolygonApiRequest[]
 ): Promise<T[]> => {
-  const baseUrl = 'https://api.polygon.io';
+  const baseUrl = process.env.POLYGON_API_URL;
 
   const configs: AxiosRequestConfig[] = requests.map(
     ({ endpoint, params = {}, apiKey }) => ({
