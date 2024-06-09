@@ -1,3 +1,5 @@
+import { StockDetails } from '@/src/components/stock-details';
+import { ITickerAggsGroupedDaily } from '@/src/lib/types';
 import { fetchPolygonData } from '@/src/lib/utils/api';
 
 import { Suspense } from 'react';
@@ -12,6 +14,7 @@ async function StockDetail({ params }: StockDetailProps) {
   const details = await fetchStockDetails(params.symbol);
   const stockOpenClose = await fetchOpenClose(params.symbol);
   const aggs = await fetchStockListGroupedDaily();
+  const bars = await fetchStockAggregateBars();
 
   const symbol = stockOpenClose?.symbol ?? '';
   const currentPrice = stockOpenClose?.open ?? 0;
@@ -24,7 +27,21 @@ async function StockDetail({ params }: StockDetailProps) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className='min-w-screen flex min-h-screen flex-col items-center justify-center justify-items-center bg-background align-middle'>
+      <div className='flex min-h-screen w-full flex-col items-center justify-center justify-items-center bg-background px-4 align-middle'>
+        <StockDetails
+          name={details?.results?.name}
+          symbol={symbol}
+          companyName={companyName}
+          bars={bars}
+          price={{
+            currentPrice,
+            highPrice,
+            lowPrice,
+            openPrice,
+            previousClosePrice,
+            volume,
+          }}
+        />
         {/* <StockCard
           data={{
             symbol,
@@ -74,6 +91,25 @@ const fetchStockListGroupedDaily = async () => {
     },
     apiKey: process.env.POLYGON_API_KEY as string,
   });
+
+  return stockListBarsGroupedDaily;
+};
+
+const fetchStockAggregateBars = async () => {
+  const ONE_MONTH_AGO = new Date(Date.now() - 24 * 60 * 60 * 1000 * 30);
+  const ONE_MONTH_AGO_STR = ONE_MONTH_AGO.toISOString().split('T')[0];
+  const TWO_DAYS_AGO = new Date(Date.now() - 24 * 60 * 60 * 1000 * 2);
+  const TWO_DAYS_AGO_STR = TWO_DAYS_AGO.toISOString().split('T')[0];
+
+  const stockListBarsGroupedDaily = fetchPolygonData<ITickerAggsGroupedDaily[]>(
+    {
+      endpoint: `v2/aggs/ticker/AAPL/range/1/day/${ONE_MONTH_AGO_STR}/${TWO_DAYS_AGO_STR}`,
+      params: {
+        adjusted: true,
+      },
+      apiKey: process.env.POLYGON_API_KEY as string,
+    }
+  );
 
   return stockListBarsGroupedDaily;
 };

@@ -25,7 +25,7 @@ export default function RootLayout({
         <div>
           <NavigationMenu />
         </div>
-        <div className='bg-background'>
+        <div className='w-full overflow-hidden bg-background px-4'>
           <Title />
 
           <div>{children}</div>
