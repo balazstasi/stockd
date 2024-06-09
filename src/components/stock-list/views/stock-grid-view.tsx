@@ -23,12 +23,12 @@ export const StockGridView = ({ metadata, prices }: StockGridViewProps) => {
     <div className='mt-8 grid grid-cols-1 gap-4 overflow-hidden md:grid-cols-2 lg:grid-cols-3'>
       {(stocks ?? [])
         .filter((result) => {
+          console.log(prices);
           const hasPriceData = prices?.results?.find(
-            (price) =>
-              price['T']?.toLocaleUpperCase() ===
-              result?.ticker?.toLocaleUpperCase()
+            (price) => price['T'] === result.ticker
           );
 
+          console.log('🚀 ~ .filter ~ hasPriceData:', hasPriceData);
           return hasPriceData;
         })
         .map((result) => {

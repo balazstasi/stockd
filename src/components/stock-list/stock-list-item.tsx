@@ -55,20 +55,22 @@ export const StockListItem = ({
       <TableCell className='hidden md:table-cell'>
         {Number(prices.v).toFixed(2) ?? 'Unknown'}
       </TableCell>
-      <TableCell>
+      <TableCell className='bg-background'>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild className='bg-white p-1'>
             <Button aria-haspopup='true' size='icon' variant='ghost'>
               <MoreHorizontal className='h-4 w-4' />
               <span className='sr-only'>Toggle menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <Link href={`/stock/${metadata.ticker}`}>
-              <DropdownMenuItem>
-                <Button variant='ghost'>📈 Go To Stock Page</Button>
-              </DropdownMenuItem>
-            </Link>
+          <DropdownMenuContent align='end' className='bg-background'>
+            <DropdownMenuItem>
+              <Button variant='ghost'>
+                <Link href={`/stock/${metadata.ticker}`}>
+                  📈 Go To Stock Page
+                </Link>
+              </Button>
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <Button
                 variant='ghost'

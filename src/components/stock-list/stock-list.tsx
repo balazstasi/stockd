@@ -16,6 +16,7 @@ interface StockListProps {
   dailyStats: IAggsGroupedDaily | null;
 }
 export const StockList = ({ stocks, dailyStats }: StockListProps) => {
+  console.log('🚀 ~ StockList ~ dailyStats:', dailyStats);
   const { viewMode, setViewMode } = useUIState();
 
   return (
